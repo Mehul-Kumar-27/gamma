@@ -18,6 +18,7 @@ var DEFAULT_RETRY_STATUS_CODES = []int{
 	http.StatusGatewayTimeout,
 }
 
+// Options holds all configuration for a Gamma client.
 type Options struct {
 	Retries           int
 	RetryDelay        time.Duration
@@ -29,6 +30,7 @@ type Options struct {
 	RetryPolicy       RetryPolicy
 }
 
+// Option is a functional option for configuring a Gamma client.
 type Option func(*Options)
 
 func WithRetries(retries int) Option {

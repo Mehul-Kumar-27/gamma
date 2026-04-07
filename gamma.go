@@ -4,14 +4,13 @@ import (
 	"net/http"
 )
 
+// Doer abstracts any type that can execute an HTTP request.
 type Doer interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-
-/*
-Fetcher is a wrapper around http.Client that provides a more convenient interface for fetching data.
-*/
+// NewGamma creates an *http.Client with retry-aware transport and
+// exponential backoff. All behaviour is configurable via Option functions.
 func NewGamma(opts ...Option) *http.Client {
 	defaultOpts := defaultOptions()
 	for _, apply := range opts {

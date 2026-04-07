@@ -8,14 +8,10 @@ import (
 	"time"
 )
 
-/*
-Backoff calculates the backoff duration based on the base delay, factor, attempt, and jittered flag.
-Base delay is the initial delay.
-Factor is the factor by which the delay is multiplied.
-Attempt is the attempt number.
-Jittered flag indicates whether to add a random jitter to the backoff duration.
-Jitter helps to avoid the thundering herd problem. check https://en.wikipedia.org/wiki/Thundering_herd_problem for more details.
-*/
+// Backoff returns the delay before the next retry. If the response carries a
+// Retry-After header, that value is used instead. Otherwise the delay is
+// baseDelay * factor^attempt, optionally with jitter to avoid thundering-herd
+// problems (see https://en.wikipedia.org/wiki/Thundering_herd_problem).
 func Backoff(baseDelay time.Duration, factor float64, attempt int, jittered bool, resp *http.Response) time.Duration {
 	if resp != nil {
 		retryAfter := parseRetryAfter(resp)
@@ -32,6 +28,8 @@ func Backoff(baseDelay time.Duration, factor float64, attempt int, jittered bool
 	return backoff
 }
 
+// TotalTimeout sums the backoff delays across all retry attempts to derive
+// an overall client timeout.
 func TotalTimeout(o *Options) time.Duration {
 	var totalDuration time.Duration
 

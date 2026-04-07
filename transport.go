@@ -9,14 +9,15 @@ import (
 	"time"
 )
 
+// GammaTransport wraps a base http.RoundTripper with retry logic,
+// exponential backoff, and configurable retry policies.
 type GammaTransport struct {
 	Base http.RoundTripper
 	opts *Options
 }
 
-/*
-GammaTransport is a wrapper around the base transport that implements the retry policy.
-*/
+// RoundTrip executes the request with retries according to the configured
+// policy. It buffers the request body so it can be replayed across attempts.
 func (g *GammaTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	var bodyBytes []byte
 	ctx := g.opts.parentCtx
